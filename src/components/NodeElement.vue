@@ -9,10 +9,10 @@
 
     @Component
     export default class NodesElement extends Vue {
-        @Prop() private gridPositionY!: Number;
-        @Prop() private gridPositionX!: Number;
-        @Prop() private positionY!: Number;
-        @Prop() private positionX!: Number;
+        @Prop() private gridPositionY!: number;
+        @Prop() private gridPositionX!: number;
+        @Prop() private positionY!: number;
+        @Prop() private positionX!: number;
         @Prop() private title!: String;
 
         get positionStyle() : any{

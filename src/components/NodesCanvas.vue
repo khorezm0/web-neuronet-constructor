@@ -6,18 +6,16 @@
                 backgroundPositionY : positionY + 'px',
                 zoom : positionZ
             }, size]"
-             @mousedown="startDrag"
-             @mousemove="doDrag"
-             @mouseup="endDrag"
              @wheel="zooming"
              ref="canvasElement"
         >
-            <NodeElement v-for="e in elements"
-                         :positionX="e.posX"
-                         :positionY="e.posY"
+            <NodeElement v-for="(e, id) in elements"
+                         :positionX="e.positionX"
+                         :positionY="e.positionY"
                          :gridPositionX="positionX"
                          :gridPositionY="positionY"
                          :title="e.title"
+                         ref="nodesElements"
             >
 
             </NodeElement>
@@ -29,71 +27,53 @@
 
     import { Component, Prop, Vue } from 'vue-property-decorator';
     import NodeElement from "@/components/NodeElement.vue";
+    import {DragInfo, ElementDragger} from "@/common/ElementDragger";
+    import {NodeElementModel} from "@/common/NodeElementModel";
+
     @Component({
         components: {NodeElement}
     })
     export default class NodesCanvas extends Vue {
         @Prop() private msg!: string;
 
-        positionX : Number = -2;
-        positionY : Number = -2;
-        positionZ : Number = 1;
+        positionX : number = -2;
+        positionY : number = -2;
+        positionZ : number = 1;
 
         size : any = {
           width : "100%",
           height : "calc(100vh - 80px)"
         };
 
-        elements : any = [
-            {
-                posX : 0,
-                posY : 0,
-                title : "Node1"
-            },
-            {
-                posX : 500,
-                posY : 0,
-                title : "Node2"
-            },
-        ];
+        elements : NodeElementModel[] = [];
 
-        private isDragging : Boolean = false;
-        private mouseOldPos : any = {
-            x : 0,
-            y : 0
-        };
-
-        startDrag(e : MouseEvent){
-            if((e.target as Element) === this.$refs.canvasElement){
-                this.isDragging = true;
-                this.mouseOldPos = {
-                    x : e.clientX,
-                    y : e.clientY
-                };
-            }
+        mounted(): void {
+            this.elements = [
+                new NodeElementModel(0,0,"Node1"),
+                new NodeElementModel(0,0,"Node2"),
+            ];
+            this.$nextTick(()=> {
+                new ElementDragger(this.$refs.canvasElement as Element, this.doDrag, false);
+                let elements : Vue[] = this.$refs.nodesElements as Vue[];
+                this.elements.forEach((el: NodeElementModel, id: number) => {
+                    //console.log(elements[id].$el);
+                    el.createDragger(elements[id].$el);
+                });
+            });
         }
 
-        doDrag(e : MouseEvent){
-            if(this.isDragging){
-                this.positionX += (e.clientX - this.mouseOldPos.x) / this.positionZ;
-                this.positionY += (e.clientY - this.mouseOldPos.y)  / this.positionZ;
+
+        doDrag(e : DragInfo) : any{
+
+                this.positionX += e.x / this.positionZ;
+                this.positionY += e.y / this.positionZ;
 
                 this.positionX = Math.min(Math.max(this.positionX,-1000),1000);
                 this.positionY = Math.min(Math.max(this.positionY,-1000),1000);
-
-                this.mouseOldPos = {
-                    x : e.clientX,
-                    y : e.clientY
-                };
-            }
         }
 
         zooming(e : WheelEvent){
             this.positionZ = Math.min(Math.max(this.positionZ - e.deltaY / 1000.0, 1),4);
-        }
-
-        endDrag(e : MouseEvent){
-            this.isDragging = false;
         }
 
     }
