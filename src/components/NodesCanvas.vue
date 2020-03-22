@@ -15,10 +15,14 @@
                          :gridPositionX="positionX"
                          :gridPositionY="positionY"
                          :title="e.title"
+                         :model="e"
                          ref="nodesElements"
             >
 
             </NodeElement>
+            <svg class="lines">
+                <line x1="50" y1="50" x2="350" y2="350" stroke="black"/>
+            </svg>
         </div>
     </div>
 </template>
@@ -54,11 +58,13 @@
             ];
             this.$nextTick(()=> {
                 new ElementDragger(this.$refs.canvasElement as Element, this.doDrag, false);
+
                 let elements : Vue[] = this.$refs.nodesElements as Vue[];
                 this.elements.forEach((el: NodeElementModel, id: number) => {
                     //console.log(elements[id].$el);
-                    el.createDragger(elements[id].$el);
+                    el.createDragger(elements[id].$el,true);
                 });
+                this.elements[0].addOutput(this.elements[1]);
             });
         }
 
@@ -99,5 +105,13 @@
         linear-gradient(90deg, rgba(255, 255, 255, .3) 1px, transparent 1px);
         background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
         background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+    }
+    .lines {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
     }
 </style>

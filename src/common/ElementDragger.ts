@@ -22,7 +22,6 @@ export class DragInfo{
     }
 }
 
-
 export class ElementDragger{
 
     private readonly _element : Element;
