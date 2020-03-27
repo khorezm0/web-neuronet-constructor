@@ -19,6 +19,8 @@
 
 #nav {
   padding: 30px;
+  background: #ffffffeb;
+  border-bottom: solid 1px black;
 }
 
 #nav a {

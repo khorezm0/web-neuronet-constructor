@@ -10,8 +10,8 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
-import NodesCanvas from "../components/NodesCanvas";
-import NetBuilder from "../components/NetBuilder";
+import NodesCanvas from "../components/NodesCanvas.vue";
+import NetBuilder from "../components/NetBuilder.vue";
 
 export default {
   name: 'home',
