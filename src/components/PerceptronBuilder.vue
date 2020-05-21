@@ -60,7 +60,7 @@
     import NeuroNet from "@/model/NeuroNet";
 
     @Component
-    export default class NetBuilder extends Vue {
+    export default class PerceptronBuilder extends Vue {
 
         Zoom : number = 5;
 

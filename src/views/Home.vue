@@ -1,23 +1,23 @@
 <template>
-  <div class="home">
+  <section class="section home">
     <!--<img alt="Vue logo" src="../assets/logo.png">-->
     <!--<HelloWorld msg="Welcome to Your Vue.js App"/>-->
     <!--<nodes-canvas></nodes-canvas>-->
-    <net-builder></net-builder>
-  </div>
+    <perceptron-builder></perceptron-builder>
+  </section>
 </template>
 
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import NodesCanvas from "../components/NodesCanvas.vue";
-import NetBuilder from "../components/NetBuilder.vue";
+import PerceptronBuilder from "../components/PerceptronBuilder.vue";
 
 export default {
   name: 'home',
   components: {
     NodesCanvas,
-    NetBuilder,
+    PerceptronBuilder,
     HelloWorld
   }
 }
