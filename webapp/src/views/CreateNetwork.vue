@@ -6,14 +6,14 @@
             </h1>
 
             <div class="field">
-                <label class="label">Название</label>
+                <label class="label">Название:</label>
                 <div class="control">
                     <input class="input" type="text" v-model="form.netName" />
                 </div>
             </div>
 
             <div class="field">
-                <label class="label">Тип сети</label>
+                <label class="label">Тип сети:</label>
                 <div class="control">
                     <div class="select">
                         <select v-model="form.netType">
@@ -26,11 +26,8 @@
             </div>
 
             <div class="field">
-                <label class="label">Слоев</label>
+                <label class="label">Слоев: {{form.layers}}</label>
                 <div class="control">
-                    <h4 class="title is-4">
-                        {{form.layers}}
-                    </h4>
                     <input type="range" min="0" max="80" v-model="form.layers"/>
                 </div>
             </div>
@@ -80,12 +77,23 @@
         };
         showSubmitFeedback: boolean = false;
 
+        mounted() {
+
+            this.form.netType = this.$store.state.netType;
+            this.form.layers = this.$store.state.layers;
+
+            this.$store.commit("setNetType", this.form.netType);
+            this.$store.commit("setNetName", this.form.netName);
+            this.$store.commit("setLayers", this.form.layers);
+        }
+
         fakeSubmit() {
 
             this.$store.commit("setNetType", this.form.netType);
             this.$store.commit("setNetName", this.form.netName);
             this.$store.commit("setLayers", this.form.layers);
 
+            this.$router.push("edit");
             //window.console.log(this.$store.state.netType);
 
             // this.showSubmitFeedback = true;

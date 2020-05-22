@@ -12,16 +12,17 @@ export default class Neuron {
     public Element : HTMLElement | null = null;
 
     get X() : number{
-        if(this.Element)
-            return this.Element.getBoundingClientRect().left + this.Element.clientWidth * 0.5;
+        if(this.Element && this.Element.parentElement)
+            return this.Element.parentElement.offsetLeft + this.Element.offsetLeft + this.Element.clientWidth * 0.5;
         return 0;
     }
 
     get Y() : number{
         if(this.Element){
-            let bodyRect = document.body.getBoundingClientRect();
-            let elemRect = this.Element.getBoundingClientRect();
-            let offset   = elemRect.top - bodyRect.top;
+            //let bodyRect = document.body.getBoundingClientRect();
+            //let elemRect = this.Element.getBoundingClientRect();
+            //let offset   = elemRect.top - bodyRect.top;
+            let offset   = this.Element.offsetTop;
 
             return offset + this.Element.clientHeight * 0.5;
         }
@@ -30,14 +31,14 @@ export default class Neuron {
 
     get LeftBorderX() :number{
         if(this.Element){
-            return this.Element.getBoundingClientRect().left;
+            return this.X - this.Element.clientWidth * 0.5;
         }
         return 0;
     }
 
     get RightBorderX() :number{
         if(this.Element)
-            return this.Element.getBoundingClientRect().left + this.Element.clientWidth;
+            return this.X + this.Element.clientWidth * 0.5;
         return 0;
     }
 

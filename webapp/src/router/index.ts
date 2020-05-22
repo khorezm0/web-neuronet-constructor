@@ -6,8 +6,8 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
+    path: '/edit',
+    name: 'edit',
     component: Home
   },
   {
@@ -22,13 +22,17 @@ const routes = [
     path: '/create',
     name: 'create',
     component: () => import(/* webpackChunkName: "about" */ '../views/CreateNetwork.vue')
+  },
+  {
+    path: '/',
+    redirect: '/create',
   }
-]
+];
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
+});
 
 export default router
