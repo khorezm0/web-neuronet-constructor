@@ -2,11 +2,19 @@ import NeuroLayer from "@/model/NeuroLayer";
 
 let neuronsCount = 0;
 
+export class NeuronRelation {
+    public Neuron : Neuron;
+    public Weight : Number;
+    constructor(neuron : Neuron, weigth : Number){
+        this.Neuron = neuron;
+        this.Weight = weigth;
+    }
+}
+
 export default class Neuron {
 
     public Layer : NeuroLayer | null;
-    private _next : Array<Neuron> = new Array<Neuron>();
-    private _weight : Number;
+    private _next : Array<NeuronRelation> = new Array<NeuronRelation>();
 
     public readonly Id : number;
     public Element : HTMLElement | null = null;
@@ -42,27 +50,26 @@ export default class Neuron {
         return 0;
     }
 
-    constructor(layer : NeuroLayer, next: Array<Neuron> | null, weight : Number = 0) {
+    constructor(layer : NeuroLayer, next: Array<NeuronRelation> | null) {
         this.Id = neuronsCount++;
         this.Layer = layer;
         if(next) this._next = next;
-        this._weight = weight;
     }
 
-    get Next() : Array<Neuron> {
+    get Next() : Array<NeuronRelation> {
         return [...this._next];
     }
 
-    AddNext(next : Neuron) {
+    AddNext(next : NeuronRelation) {
         if(next){
-            if(next == this
+            if(next.Neuron == this
                 || this.Next.indexOf(next) !== -1
                 ||
                 (next &&
-                    (!next.Layer
+                    (!next.Neuron.Layer
                     || !this.Layer
-                    || next.Layer == this.Layer
-                    || next.Layer.Index - this.Layer.Index !== 1
+                    || next.Neuron.Layer == this.Layer
+                    || next.Neuron.Layer.Index - this.Layer.Index !== 1
                     )
                 )) return;
 
@@ -71,21 +78,14 @@ export default class Neuron {
     }
 
     RemoveNext(next : Neuron) {
-        this.RemoveNextAt(this._next.indexOf(next));
+        this.RemoveNextAt(this._next.findIndex(x=> x.Neuron == next));
     }
 
     RemoveNextAt(i : number){
         if(i>=0 && i < this._next.length){
-            this._next = this._next.splice(i, 1);
+            this._next.splice(i, 1);
         }
     }
 
-    get Weight() : Number {
-        return this._weight;
-    }
-
-    set Weight(weight : Number) {
-        this._weight = weight;
-    }
 
 }

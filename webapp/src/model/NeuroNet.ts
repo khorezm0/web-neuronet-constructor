@@ -66,8 +66,8 @@ export default class NeuroNet {
         this.ForEach(x=>{
            x.Neurons.forEach(n=>{
                n.Next.forEach(next=>{
-                   if(!next.Layer){
-                       n.RemoveNext(next);
+                   if(!next.Neuron.Layer){
+                       n.RemoveNext(next.Neuron);
                    }
                });
            });

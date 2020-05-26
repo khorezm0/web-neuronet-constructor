@@ -20,8 +20,8 @@ export default class NeuroLayer{
         this._net = net;
     }
 
-    AddNeuron(w : Number = 0) : Neuron {
-        let n = new Neuron(this,null, w);
+    AddNeuron() : Neuron {
+        let n = new Neuron(this,null);
         this._neurons.push(n);
         return n;
     }
