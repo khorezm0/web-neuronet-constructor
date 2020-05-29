@@ -117,7 +117,11 @@
                     <br>
                     Степень обучения:
                     <input min="0.1" max="2" class="input" type="number" v-model="trainData.trainSpeed">
-
+                    Датасет обучения(<a href="#">формат</a>)
+                    <input type="file" class="input">
+                    <br>
+                    Датасет тестирования
+                    <input type="file" class="input">
                 </p>
             </div>
             <div class="dialog-buttons">
@@ -272,10 +276,12 @@
             if(this.isSaveSettingsLayersForAll){
                 for (let i = 0; i < this.Layers.Count; i++) {
                     let currLayer = this.Layers.GetLayer(i);
-                    applyFunc(currLayer);
+                    if(currLayer)
+                        applyFunc(currLayer);
                 }
             }else{
-                applyFunc(this.currSettingsLayer);
+                if(this.currSettingsLayer)
+                    applyFunc(this.currSettingsLayer);
             }
         }
 
@@ -328,7 +334,7 @@
                 if(this.Layers.Count > 1){
                     currLayer = this.Layers.GetLayer(0);
                     this.Layers.ForEach((l:NeuroLayer, i : Number)=>{
-                        if(i > 0){
+                        if(i > 0 && currLayer){
                             applyFunc(currLayer, l);
                         }
                         currLayer = l;

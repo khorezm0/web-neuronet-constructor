@@ -8,13 +8,13 @@
   },
   "dependencies": {
     "cache-loader": "^4.1.0",
+    "chart.js": "^2.9.3",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-js-modal": "^2.0.0-rc.3",
     "vue-property-decorator": "^8.3.0",
     "vue-router": "^3.1.3",
-    "vuex": "^3.1.2",
-    "vue-context-menu": "latest"
+    "vuex": "^3.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-router": "^4.1.0",

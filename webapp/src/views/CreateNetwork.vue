@@ -1,5 +1,5 @@
 <template>
-    <section class="section">
+    <section class="section create-net-section">
         <form>
             <h1 class="title is-1">
                 Создать новую сеть
@@ -12,7 +12,7 @@
                 </div>
             </div>
 
-            <div class="field">
+            <!--<div class="field">
                 <label class="label">Тип сети:</label>
                 <div class="control">
                     <div class="select">
@@ -23,7 +23,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <div class="field">
                 <label class="label">Слоев: {{form.layers}}</label>
@@ -69,14 +69,17 @@
             netType: 0,
             layers: 3
         };
+        //TODO: это дичь, надо убрать
         netTypes : any = {
-                0:"Перцептрон",
-                1:"Сверточная",
-                2: "Рекуррентная",
-                3: "Сеть Хопфилда"
+                0:"Стандарнтная",
+                1: "Рекуретная",
+                3: "Запоминающая"
         };
         showSubmitFeedback: boolean = false;
-
+        //this.showSubmitFeedback = true;
+        // setTimeout(() => {
+        //     this.showSubmitFeedback = false;
+        // }, 5000);
         mounted() {
 
             this.form.netType = this.$store.state.netType;
@@ -116,5 +119,9 @@
 
     .fade-enter-active, .fade-leave-active {
         transition: opacity .5s;
+    }
+    .create-net-section {
+        max-width: 600px;
+        margin: auto;
     }
 </style>

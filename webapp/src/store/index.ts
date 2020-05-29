@@ -7,18 +7,22 @@ export default new Vuex.Store({
   state: {
     netType : 0,
     netName : "Моя сеть",
-    layers : 3
+    layers : 3,
+    login : ""
   },
   mutations: {
-    setNetType(state, type){
+    setNetType(state, type) {
       state.netType = type;
     },
-    setNetName(state, name){
+    setNetName(state, name) {
       state.netName = name;
     },
-    setLayers(state, layers){
+    setLayers(state, layers) {
       state.layers = layers;
-    }
+    },
+    setLogin(state, login) {
+      state.login = login;
+    },
   },
   actions: {
   },

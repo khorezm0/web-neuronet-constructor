@@ -10,6 +10,7 @@
              ref="canvasElement"
         >
             <NodeElement v-for="(e, id) in elements"
+                         :key="id"
                          :positionX="e.positionX"
                          :positionY="e.positionY"
                          :gridPositionX="positionX"

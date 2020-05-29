@@ -4,7 +4,8 @@
       <router-link to="/create" class="site-header">Веб конструктор нейросетей</router-link>
       <router-link to="/create">Создать</router-link> |
       <router-link to="/edit">Редактировать</router-link> |
-      <router-link to="/about">Помощь</router-link>
+      <router-link to="/about">Помощь</router-link> |
+      <router-link to="/login">Войти</router-link>
     </div>
     <router-view class="current-view" />
     <hr>
