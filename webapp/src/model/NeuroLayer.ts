@@ -10,6 +10,7 @@ export default class NeuroLayer{
     private _index : number = 0;
     public readonly Id : number;
     private _net : NeuroNet | null = null;
+    activationFunc : 'elu' | 'hardSigmoid' | 'linear' | 'relu' | 'relu6' | 'selu' | 'sigmoid' | 'softmax' | 'softplus' | 'softsign' | 'tanh' = "sigmoid";
 
 
     constructor(){

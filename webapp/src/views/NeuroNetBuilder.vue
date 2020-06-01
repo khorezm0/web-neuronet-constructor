@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <section class="section">
         <input type="file" ref="file" style="opacity: 0;display:block;width: 1px;height: 1px;zoom:0.1">
         <div class="main-content">
 
@@ -129,7 +129,7 @@
                 <button type="button" class="button is-primary" @click="applyTrain">Ок</button>
             </div>
         </modal>
-    </div>
+    </section>
 </template>
 
 <script lang="ts">
@@ -140,12 +140,14 @@
     import JsonFileLoader from "@/common/JsonFileLoader";
 
     import {NeuronRelation} from "@/model/Neuron";
+    import SimpleTrainer from "@/common/SimpleTrainer";
+    import Dataset from "@/model/Dataset";
     const VueModal = require("vue-js-modal");
 
     @Component({
         components: {"vue-js-modal": VueModal}
     })
-    export default class PerceptronBuilder extends Vue {
+    export default class NeuroNetBuilder extends Vue {
 
         readonly ActivationFunctions : any = {
             "step":"Ступенчатая",
@@ -296,6 +298,12 @@
         applyTrain(){
             this.$modal.hide("trainSettings");
             this.showMessageDialog("Успех", "Тренировка началась!");
+
+            let trainer : SimpleTrainer = new  SimpleTrainer(this.Layers);
+            trainer.trainModel(new Dataset(), new Dataset(), {
+
+            });
+
         }
 
         selLayerRelations(type : number) {

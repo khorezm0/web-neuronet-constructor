@@ -11,7 +11,7 @@
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import NodesCanvas from "../components/NodesCanvas.vue";
-import PerceptronBuilder from "../components/PerceptronBuilder.vue";
+import PerceptronBuilder from "../components/NeuroNetBuilder.vue";
 
 export default {
   name: 'home',

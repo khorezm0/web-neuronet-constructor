@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
@@ -8,7 +7,7 @@ const routes = [
   {
     path: '/edit',
     name: 'edit',
-    component: Home
+    component: ()=> import('../views/NeuroNetBuilder.vue')
   },
   {
     path: '/about',

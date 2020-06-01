@@ -6,6 +6,8 @@ interface NeuroNetIterator {
 
 export default class NeuroNet {
     private _layers : Array<NeuroLayer> = new Array<NeuroLayer>();
+    epochs : number = 10;
+
 
     constructor(layers : Array<NeuroLayer> | null = null){
         if(layers){
