@@ -34,8 +34,8 @@
 
 
                         <svg class="lines">
-                            <g v-for="n in getAllNeurons()" v-if="n.Next && n.Next.length">
-                                <g v-for="to in n.Next">
+                            <g v-for="n in getAllNeurons()" v-if="n.Next && n.Next.length" :key="n.Id">
+                                <g v-for="to in n.Next"  :key="to.Id">
                                     <line
                                             :x1="n.RightBorderX"
                                             :y1="n.Y"
@@ -69,7 +69,7 @@
                     <label class="label">Настройки:</label>
                     <!--<button class="button" @click="selLayerRelations(0)">Прямая</button>
                     <button class="button" @click="selLayerRelations(1)">Каждый с каждым</button>-->
-                    <!--<button class="button" @click="randomizeWeights()">Случайные значения весов</button>-->
+                    <button class="button" @click="removeLayer()">Удалить слой</button>
                     <div class="select">
                         <select @change="setActivationFunc()"
                                 @click.stop.prevent
@@ -99,7 +99,7 @@
             </div>
         </section>
 
-        <training-result :style="resultStyle"></training-result>
+        <training-result :training-bus="trainingBus" :style="resultStyle"></training-result>
 
 
         <modal name="trainSettings" class="train-settings" :adaptive="true">
@@ -162,13 +162,13 @@
         readonly ActivationFunctions : any = {
             "sigmoid":"Сигмоида",
             "linear":"Линейная",
-            "step":"Ступенчатая",
-            "hyperbolTan":"Гиперболический тангенс",
+            //"step":"Ступенчатая",
+            "tanh":"Гиперболический тангенс",
             "relu":"ReLu"
         };
 
         Layers: NeuroNet = new NeuroNet();
-        currActivationFunction : String = "step";
+        currActivationFunction : 'elu' | 'hardSigmoid' | 'linear' | 'relu' | 'relu6' | 'selu' | 'sigmoid' | 'softmax' | 'softplus' | 'softsign' | 'tanh' = "sigmoid";
         trainData : any = {
             activationFunctionValue : 0.5,
             iterations : 100,
@@ -192,6 +192,7 @@
 
         trainDataset : Dataset = new Dataset();
         testDataset : Dataset = new Dataset();
+        trainingBus : Vue = new Vue();
 
         //не нужны ща:------
         IsRelating: boolean = false;
@@ -229,6 +230,7 @@
                 this.currSettingsLayer = layer;
                 this.currSettingsLayerIndex = layerIndex;
                 this.currSettingsLayerCount = layer.Neurons.length;
+                this.currActivationFunction = layer.activationFunc;
                 event.stopPropagation();
                 this.openContext(menu, event.clientX, event.clientY);
             }
@@ -247,6 +249,14 @@
             if(this.currContextMenu) {
                 this.currContextMenu.style.display="none";
             }
+        }
+
+        removeLayer(){
+            let l = this.currSettingsLayer;
+            this.Layers.RemoveLayer(l);
+            this.$nextTick(()=>{
+               this.getAllNeurons();
+            });
         }
 
         setActivationFunc(){
@@ -277,9 +287,11 @@
                 }
             }
 
-
             this.$nextTick(()=>{
-                setTimeout(this.getAllNeurons,100);
+                this.autoConnectNeurons();
+                // this.$forceUpdate();
+
+                setTimeout(()=> { this.getAllNeurons(); } ,200);
             });
         }
 
@@ -371,16 +383,19 @@
                         onEpochEnd : (epo, log:any)=> {
                             console.log(epo);
                             console.log(log);
+                            vue.trainingBus.$emit("trainEpoch", log);
                         },
                         onTrainEnd(logs: any){
                             console.log(logs);
-                            vue.showMessageDialog("Успех", "Тренировка закончилась!");
+                            vue.showMessageDialog("Инфо", "Тренировка закончилась!");
                             vue.$store.commit("setTrainedModel", trainer);
+                            vue.trainingBus.$emit("trainEnd", {});
                         }
                     }
                 ).then(()=>{
-                    this.showMessageDialog("Успех", "Тренировка началась!");
+                    this.showMessageDialog("Инфо", "Тренировка началась!");
                     vue.resultStyle.display = "block";
+                    this.trainingBus.$emit("newTrain", {});
                 }).catch(e=>{
                     console.error(e);
                     this.errorDialog("Ошибка разбора параметров! Возможно датасет не соответствует сети.");
@@ -514,8 +529,9 @@
             this.Layers.ForEach(x => {
                 x.Neurons.forEach((y: Neuron) => {
                     if (!y.Element) {
-                        let el = (this.$refs.root as Element).querySelector(`#n${y.Id}`);
+                        let el = (this.$refs.root as Element).querySelector(`#n${y.Id}`) as HTMLElement;
                         if (el) {
+                            el.style.top = "0px";
                             Vue.set(y, "Element", el);
                         }
                     }

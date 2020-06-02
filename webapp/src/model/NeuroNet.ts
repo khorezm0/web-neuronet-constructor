@@ -28,6 +28,10 @@ export default class NeuroNet {
         this.countIndexes();
     }
 
+    RemoveLayer(layer : NeuroLayer){
+        this.RemoveLayerAt(this._layers.indexOf(layer));
+    }
+
     RemoveLayerAt(i : number){
         if(i >= 0 && i < this._layers.length){
             this._layers.splice(i, 1);

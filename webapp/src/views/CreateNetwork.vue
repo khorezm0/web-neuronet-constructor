@@ -124,4 +124,8 @@
         max-width: 600px;
         margin: auto;
     }
+
+    input[type=range]{
+        width: 100%;
+    }
 </style>

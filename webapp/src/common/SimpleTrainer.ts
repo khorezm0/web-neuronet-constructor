@@ -22,6 +22,8 @@ export default class SimpleTrainer {
     currTrainingLoss : number = 0;
     currTrainingAcc : number = 0;
     currTrainingEpoch : number = 0;
+    currTrainingDataset : Dataset = new Dataset();
+    currValDataset : Dataset = new Dataset();
 
 
     constructor(net : NeuroNet){
@@ -78,6 +80,9 @@ export default class SimpleTrainer {
 
         let testXs = tf.tensor2d(testDataset.inputs).reshape([testDataset.inputs.length, this.inputLen]);
         let testYs = tf.tensor1d(testDataset.outputs);
+
+        this.currTrainingDataset = dataset;
+        this.currValDataset = testDataset;
 
         let self = this;
         return new Promise((resolve, reject)=> {
