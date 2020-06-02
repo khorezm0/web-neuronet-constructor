@@ -10,8 +10,9 @@ export default class NeuroLayer{
     private _index : number = 0;
     public readonly Id : number;
     private _net : NeuroNet | null = null;
-    activationFunc : 'elu' | 'hardSigmoid' | 'linear' | 'relu' | 'relu6' | 'selu' | 'sigmoid' | 'softmax' | 'softplus' | 'softsign' | 'tanh' = "sigmoid";
 
+    activationFunc : 'elu' | 'hardSigmoid' | 'linear' | 'relu' | 'relu6' | 'selu' | 'sigmoid' | 'softmax' | 'softplus' | 'softsign' | 'tanh' = "sigmoid";
+    connectionType : 'flat' | 'dense' = "dense";
 
     constructor(){
         this.Id = neuroLayersCount++;
@@ -43,7 +44,7 @@ export default class NeuroLayer{
         return [...this._neurons];
     }
 
-    get NeuronsCount() : Number {
+    get NeuronsCount() : number {
         return this._neurons.length;
     }
 

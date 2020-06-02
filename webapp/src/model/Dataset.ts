@@ -1,4 +1,4 @@
 export default class Dataset {
-    inputs : Array<number> = [];
+    inputs : Array<Array<number>> = [];
     outputs : Array<number> = [];
 }

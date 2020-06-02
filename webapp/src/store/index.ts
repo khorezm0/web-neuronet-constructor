@@ -8,7 +8,8 @@ export default new Vuex.Store({
     netType : 0,
     netName : "Моя сеть",
     layers : 3,
-    login : ""
+    login : "",
+    trainedModel : {}
   },
   mutations: {
     setNetType(state, type) {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     setLogin(state, login) {
       state.login = login;
     },
+    setTrainedModel(state, model){
+      state.trainedModel = model;
+    }
   },
   actions: {
   },

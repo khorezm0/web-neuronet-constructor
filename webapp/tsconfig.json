@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "downlevelIteration": true,
-    "module": "esnext",
-    "strict": true,
+    "module": "commonjs",
+    "strict": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -24,7 +24,8 @@
       "esnext",
       "dom",
       "dom.iterable",
-      "scripthost"
+      "scripthost",
+      "es2015"
     ]
   },
   "include": [

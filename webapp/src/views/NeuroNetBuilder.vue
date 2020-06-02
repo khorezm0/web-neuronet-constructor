@@ -1,135 +1,144 @@
 <template>
-    <section class="section">
-        <input type="file" ref="file" style="opacity: 0;display:block;width: 1px;height: 1px;zoom:0.1">
-        <div class="main-content">
+    <div>
+        <section class="section">
+            <input type="file" ref="file" style="opacity: 0;display:block;width: 1px;height: 1px;zoom:0.1">
+            <div class="main-content">
 
-            <div class="box editor-panel">
-                <div class="editor-group">
-                    <input class="input layers-count-input" max="5" min="1" type="number" v-model="AddLayersCount">
-                    <button @click="addLayer" class="button is-primary  btn-add-layer">Добавить слой</button>
-                </div>
-                <button @click="loadWeights" class="button is-primary  btn-add-layer">Загрузить веса</button>
-                <button @click="trainNet" class="button is-primary  btn-add-layer">Перейти к обучению</button>
-                <div class="select">
-                    <select v-model="currActivationFunction">
-                        <optgroup label = "Функция авктивации">
-                            <option v-for="(type,i) in ActivationFunctions" :value="i">
-                                {{type}}
-                            </option>
-                        </optgroup>
-                    </select>
-                </div>
-                <div class="flex-grow"></div>
-                <div class="editor-group">
-                    <label for="zoom" class="icon is-medium" style="">
-                        <i class="fa fa-2x fa-search-plus fa-inverse" aria-hidden="true"></i></label>
-                    <input id="zoom" type="range" v-model="SliderZoomValue" max="20" min="1" @input="zoomChange">
-                </div>
-            </div>
-
-            <div class="root" ref="root" @mousemove="onRelatingMove">
-                <div class="layers" :style="`zoom: ${Zoom};`">
-                    <div v-for="(layer, index) in Layers.ToArray()" :key="layer.Id" class="layers-col" ref="layers">
-                        <div class="btn-add-neuron" @click="addNeuron(layer)">+</div>
-                        <div class="btn-set-relations" @click="openLayersContext(layer, index, $event)" ><i class="fa fa-cog" aria-hidden="true"></i></div>
-                        <div v-for="neuron in layer.Neurons"
-                             :id="`n${neuron.Id}`"
-                             class="neuron"
-                             :style="`width:${NeuronSize}px;height:${NeuronSize}px;`"
-                             @mousedown="setRelations"
-                        ></div>
+                <div class="box editor-panel">
+                    <div class="editor-group">
+                        <input class="input layers-count-input" max="5" min="1" type="number" v-model="AddLayersCount">
+                        <button @click="addLayer" class="button is-primary  btn-add-layer">Добавить слой</button>
                     </div>
+                    <button @click="loadWeights" class="button is-primary  btn-add-layer">Сохранить модель</button>
+                    <button @click="trainNet" class="button is-primary  btn-add-layer">Перейти к обучению</button>
+                    <div class="flex-grow"></div>
+                    <div class="editor-group">
+                        <label for="zoom" class="icon is-medium" style="">
+                            <i class="fa fa-2x fa-search-plus fa-inverse" aria-hidden="true"></i></label>
+                        <input id="zoom" type="range" v-model="SliderZoomValue" max="20" min="1" @input="zoomChange">
+                    </div>
+                </div>
+
+                <div class="root" ref="root" @mousemove="onRelatingMove">
+                    <div class="layers" :style="`zoom: ${Zoom};`">
+                        <div v-for="(layer, index) in Layers.ToArray()" :key="layer.Id" class="layers-col" ref="layers">
+                            <div class="btn-add-neuron" @click="addNeuron(layer)">+</div>
+                            <div class="btn-set-relations" @click="openLayersContext(layer, index, $event)" ><i class="fa fa-cog" aria-hidden="true"></i></div>
+                            <div v-for="neuron in layer.Neurons"
+                                 :id="`n${neuron.Id}`"
+                                 class="neuron"
+                                 :style="`width:${NeuronSize}px;height:${NeuronSize}px;`"
+                                 @mousedown="setRelations"
+                            ></div>
+                        </div>
 
 
-                    <svg class="lines">
-                        <g v-for="n in getAllNeurons()" v-if="n.Next && n.Next.length">
-                            <g v-for="to in n.Next">
-                                <line
-                                        :x1="n.RightBorderX"
-                                        :y1="n.Y"
-                                        :x2="to.Neuron.LeftBorderX"
-                                        :y2="to.Neuron.Y"
-                                        stroke="black"></line>
-                                <!--<polygon :points="`0,0
-                                    -8,8
-                                    -8,-8`"
-                                 :style="`fill:black;
-                                 transform: translate(${to.LeftBorderX}px, ${to.Y}px) ` +
-                                    `rotate(${calcAngle(n.RightBorderX, n.Y,to.LeftBorderX, to.Y)}rad);`" >
-                                    &lt;!&ndash;угол между двумя векторами&ndash;&gt;
-                                </polygon>-->
+                        <svg class="lines">
+                            <g v-for="n in getAllNeurons()" v-if="n.Next && n.Next.length">
+                                <g v-for="to in n.Next">
+                                    <line
+                                            :x1="n.RightBorderX"
+                                            :y1="n.Y"
+                                            :x2="to.Neuron.LeftBorderX"
+                                            :y2="to.Neuron.Y"
+                                            stroke="black"></line>
+                                    <!--<polygon :points="`0,0
+                                        -8,8
+                                        -8,-8`"
+                                     :style="`fill:black;
+                                     transform: translate(${to.LeftBorderX}px, ${to.Y}px) ` +
+                                        `rotate(${calcAngle(n.RightBorderX, n.Y,to.LeftBorderX, to.Y)}rad);`" >
+                                        &lt;!&ndash;угол между двумя векторами&ndash;&gt;
+                                    </polygon>-->
+                                </g>
                             </g>
-                        </g>
 
-                        <line v-if="IsRelating"
-                              :x1="RelatingNeuron.RightBorderX"
-                              :y1="RelatingNeuron.Y"
-                              :x2="RelateX"
-                              :y2="RelateY"
-                              stroke="black"></line>
-                    </svg>
+                            <line v-if="IsRelating"
+                                  :x1="RelatingNeuron.RightBorderX"
+                                  :y1="RelatingNeuron.Y"
+                                  :x2="RelateX"
+                                  :y2="RelateY"
+                                  stroke="black"></line>
+                        </svg>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div ref="layerSettingsContext" class="box context-menu">
-            <div class="context-content">
-                <label class="label">Связь:</label>
-                <button class="button" @click="selLayerRelations(0)">Прямая</button>
-                <button class="button" @click="selLayerRelations(1)">Каждый с каждым</button>
-                <button class="button" @click="randomizeWeights()">Случайные значения весов</button>
-                <span class="context-line">
-                    <input @click.stop.prevent
-                           class="input layers-count-input"
-                           min="1" max="100" type="number" v-model="currSettingsLayerCount"
-                           @change="selLayerNeuronCount()"
-                    >
+            <div ref="layerSettingsContext" class="box context-menu">
+                <div class="context-content">
+                    <label class="label">Настройки:</label>
+                    <!--<button class="button" @click="selLayerRelations(0)">Прямая</button>
+                    <button class="button" @click="selLayerRelations(1)">Каждый с каждым</button>-->
+                    <!--<button class="button" @click="randomizeWeights()">Случайные значения весов</button>-->
+                    <div class="select">
+                        <select @change="setActivationFunc()"
+                                @click.stop.prevent
+                                v-model="currActivationFunction">
+                            <optgroup label = "Функция авктивации">
+                                <option v-for="(type,i) in ActivationFunctions" :value="i">
+                                    {{type}}
+                                </option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <span class="context-line">
+                        <input @click.stop.prevent
+                               class="input layers-count-input"
+                               min="1" max="100" type="number" v-model="currSettingsLayerCount"
+                               @change="selLayerNeuronCount()"
+                        >
 
-                    <button class="button" @click="selLayerNeuronCount()">Нейронов</button>
-                </span>
+                        <button class="button" @click="selLayerNeuronCount()">Нейронов</button>
+                    </span>
 
-                <label class="checkbox" @click.stop>
-                    <input type="checkbox" v-model="isSaveSettingsLayersForAll" >
-                    Применить для всех
-                </label>
+                    <label class="checkbox" @click.stop>
+                        <input type="checkbox" v-model="isSaveSettingsLayersForAll" >
+                        Применить для всех
+                    </label>
+                </div>
             </div>
-        </div>
-        <v-dialog/>
+        </section>
+
+        <training-result :style="resultStyle"></training-result>
+
+
         <modal name="trainSettings" class="train-settings" :adaptive="true">
-            <div class="hero-body">
-                <h1 class="title train-title">Тренировка</h1>
-                <p class="dialog-c-text">
-                    <span v-if="currActivationFunction === 'step'">
-                        Настройки для ступенчетой фукнции активации:
+                <div class="hero-body">
+                    <h1 class="title train-title">Тренировка</h1>
+                    <p class="dialog-c-text">
+                        <span v-if="currActivationFunction === 'step'">
+                            Настройки для ступенчетой фукнции активации:
+                            <br>
+                        </span>
+
+                        <span v-if="currActivationFunction === 'linear'">
+                            Настройки для линейной фукнции активации:
+                            <br>
+                        </span>
+
+                        <input class="input" type="number" v-model="trainData.activationFunctionValue"
+                               v-if="['step','linear'].includes(currActivationFunction)">
+
+                        Эпох:
+                        <input min="10" max="10000" class="input" type="number" v-model="trainData.iterations">
                         <br>
-                    </span>
-
-                    <span v-if="currActivationFunction === 'linear'">
-                        Настройки для линейной фукнции активации:
+                        Степень обучения:
+                        <input min="0.1" max="2" class="input" type="number" v-model="trainData.trainSpeed">
+                        Датасет обучения(<a href="#">формат</a>)
+                        <input type="file" class="input" @change="trainDataSetChange">
                         <br>
-                    </span>
+                        Датасет тестирования
+                        <input type="file" class="input" @change="testDataSetChange">
+                    </p>
+                </div>
+                <div class="dialog-buttons">
+                    <button type="button" class="button" @click="closeTrainDialog">Отмена</button>
+                    <button type="button" class="button is-primary" @click="applyTrain">Ок</button>
+                </div>
+            </modal>
 
-                    <input class="input" type="number" v-model="trainData.activationFunctionValue"
-                           v-if="['step','linear'].includes(currActivationFunction)">
-
-                    Эпох:
-                    <input min="10" max="10000" class="input" type="number" v-model="trainData.iterations">
-                    <br>
-                    Степень обучения:
-                    <input min="0.1" max="2" class="input" type="number" v-model="trainData.trainSpeed">
-                    Датасет обучения(<a href="#">формат</a>)
-                    <input type="file" class="input">
-                    <br>
-                    Датасет тестирования
-                    <input type="file" class="input">
-                </p>
-            </div>
-            <div class="dialog-buttons">
-                <button type="button" class="button" @click="closeTrainDialog">Отмена</button>
-                <button type="button" class="button is-primary" @click="applyTrain">Ок</button>
-            </div>
-        </modal>
-    </section>
+            <v-dialog/>
+    </div>
 </template>
 
 <script lang="ts">
@@ -142,17 +151,18 @@
     import {NeuronRelation} from "@/model/Neuron";
     import SimpleTrainer from "@/common/SimpleTrainer";
     import Dataset from "@/model/Dataset";
+    import TrainingResult from "@/views/TrainingResult.vue";
     const VueModal = require("vue-js-modal");
 
     @Component({
-        components: {"vue-js-modal": VueModal}
+        components: {TrainingResult, "vue-js-modal": VueModal}
     })
     export default class NeuroNetBuilder extends Vue {
 
         readonly ActivationFunctions : any = {
-            "step":"Ступенчатая",
             "sigmoid":"Сигмоида",
             "linear":"Линейная",
+            "step":"Ступенчатая",
             "hyperbolTan":"Гиперболический тангенс",
             "relu":"ReLu"
         };
@@ -163,6 +173,9 @@
             activationFunctionValue : 0.5,
             iterations : 100,
             trainSpeed : 1
+        };
+        resultStyle : any  ={
+            display : "none"
         };
 
         SliderZoomValue: number = 8;
@@ -176,6 +189,9 @@
 
         currContextMenu : HTMLElement | null = null;
         isSaveSettingsLayersForAll : boolean = true;
+
+        trainDataset : Dataset = new Dataset();
+        testDataset : Dataset = new Dataset();
 
         //не нужны ща:------
         IsRelating: boolean = false;
@@ -232,6 +248,12 @@
                 this.currContextMenu.style.display="none";
             }
         }
+
+        setActivationFunc(){
+            let l = this.currSettingsLayer;
+            l.activationFunc = this.currActivationFunction;
+        }
+
         selLayerNeuronCount() {
             let l = this.currSettingsLayer;
             let applyFunc = (l:NeuroLayer)=>{
@@ -259,6 +281,49 @@
             this.$nextTick(()=>{
                 setTimeout(this.getAllNeurons,100);
             });
+        }
+
+        testDataSetChange(e : Event):void {
+            let fileLoader = new JsonFileLoader();
+            let files = (e.target as HTMLInputElement).files;
+            if(files && files.length){
+                fileLoader.loadFile(files[0]).then(json=>{
+                    if(json.inputs && Array.isArray(json.inputs)){
+                        if(json.outputs && Array.isArray(json.outputs)) {
+                            let dataSet = new  Dataset();
+                            dataSet.inputs = json.inputs;
+                            dataSet.outputs = json.outputs;
+                            this.testDataset = dataSet;
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                    this.errorDialog("Неверный формат данных!");
+                    (e.target as HTMLInputElement).value = "";
+                })
+                ;
+            }
+        }
+
+        trainDataSetChange(e : Event):void {
+            let fileLoader = new JsonFileLoader();
+            let files = (e.target as HTMLInputElement).files;
+            if(files && files.length){
+                fileLoader.loadFile(files[0]).then(json=>{
+                    if(json.inputs && Array.isArray(json.inputs)){
+                        if(json.outputs && Array.isArray(json.outputs)) {
+                            let dataSet = new  Dataset();
+                            dataSet.inputs = json.inputs;
+                            dataSet.outputs = json.outputs;
+                            this.trainDataset = dataSet;
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                    this.errorDialog("Неверный формат данных!");
+                    (e.target as HTMLInputElement).value = "";
+                });
+            }
         }
 
 
@@ -297,12 +362,34 @@
 
         applyTrain(){
             this.$modal.hide("trainSettings");
-            this.showMessageDialog("Успех", "Тренировка началась!");
-
-            let trainer : SimpleTrainer = new  SimpleTrainer(this.Layers);
-            trainer.trainModel(new Dataset(), new Dataset(), {
-
-            });
+            let vue = this;
+            try{
+                this.Layers.epochs = this.trainData.iterations;
+                let trainer : SimpleTrainer = new  SimpleTrainer(this.Layers);
+                trainer.trainModel(this.trainDataset, this.testDataset,
+                    {
+                        onEpochEnd : (epo, log:any)=> {
+                            console.log(epo);
+                            console.log(log);
+                        },
+                        onTrainEnd(logs: any){
+                            console.log(logs);
+                            vue.showMessageDialog("Успех", "Тренировка закончилась!");
+                            vue.$store.commit("setTrainedModel", trainer);
+                        }
+                    }
+                ).then(()=>{
+                    this.showMessageDialog("Успех", "Тренировка началась!");
+                    vue.resultStyle.display = "block";
+                }).catch(e=>{
+                    console.error(e);
+                    this.errorDialog("Ошибка разбора параметров! Возможно датасет не соответствует сети.");
+                });
+            }
+            catch (e) {
+                console.error(e);
+                this.errorDialog("Ошибка разбора параметров! Возможно датасет не соответствует сети.");
+            }
 
         }
 
@@ -557,13 +644,6 @@
                 layer.AddNeuron();
                 layer.AddNeuron();
                 layer.AddNeuron();
-                layer.AddNeuron();
-                layer.AddNeuron();
-                layer.AddNeuron();
-                layer.AddNeuron();
-                layer.AddNeuron();
-                layer.AddNeuron();
-                layer.AddNeuron();
                 this.Layers.PushLayer(layer);
             }
 
@@ -582,7 +662,7 @@
                 element = (this.$refs.root as HTMLElement)
             ;
 
-            window.addEventListener("mousemove", (m) => {
+            window.addEventListener("mousemove", (m : MouseEvent) => {
                 if (curDown) {
                     element.scrollBy((curXPos - m.pageX), (curYPos - m.pageY));
                     curYPos = m.pageY;
@@ -590,7 +670,7 @@
                 }
             });
 
-            element.addEventListener("mousedown", function (m) {
+            element.addEventListener("mousedown", function (m : MouseEvent) {
                 curYPos = m.pageY;
                 curXPos = m.pageX;
                 curDown = true;
@@ -876,5 +956,6 @@
         display: flex;
         flex-direction: column;
         height: auto !important;
+        top: 130px !important;
     }
 </style>
