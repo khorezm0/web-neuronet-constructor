@@ -254,8 +254,12 @@
         removeLayer(){
             let l = this.currSettingsLayer;
             this.Layers.RemoveLayer(l);
-            this.$nextTick(()=>{
-               this.getAllNeurons();
+
+            this.$nextTick(() => {
+                this.autoConnectNeurons();
+                this.$nextTick(()=>{
+                    this.getAllNeurons();
+                });
             });
         }
 
@@ -287,11 +291,11 @@
                 }
             }
 
-            this.$nextTick(()=>{
+            this.$nextTick(() => {
                 this.autoConnectNeurons();
-                // this.$forceUpdate();
-
-                setTimeout(()=> { this.getAllNeurons(); } ,200);
+                this.$nextTick(()=>{
+                    this.getAllNeurons();
+                });
             });
         }
 
@@ -501,18 +505,22 @@
                 this.Layers.PushLayer(layer);
             }
 
-            //this.autoConnectNeurons();
             this.$nextTick(() => {
-                this.getAllNeurons();
+                this.autoConnectNeurons();
+                this.$nextTick(()=>{
+                    this.getAllNeurons();
+                });
             });
         }
 
         addNeuron(layer: NeuroLayer) {
             layer.AddNeuron();
-            //this.autoConnectNeurons();
 
             this.$nextTick(() => {
-                this.getAllNeurons();
+                this.autoConnectNeurons();
+                this.$nextTick(()=>{
+                    this.getAllNeurons();
+                });
             });
         }
 

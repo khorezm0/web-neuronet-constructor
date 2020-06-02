@@ -24,6 +24,7 @@ export default class SimpleTrainer {
     currTrainingEpoch : number = 0;
     currTrainingDataset : Dataset = new Dataset();
     currValDataset : Dataset = new Dataset();
+    outputLen : number = 0;
 
 
     constructor(net : NeuroNet){
@@ -52,6 +53,7 @@ export default class SimpleTrainer {
                     units : layer.NeuronsCount,
                     activation : layer.activationFunc,
                 });
+                this.outputLen = layer.NeuronsCount;
             }
 
             console.log(i+":"+denseLayer.name);
@@ -75,11 +77,11 @@ export default class SimpleTrainer {
         }
 
         //[ `кол-во объектов типо`, `колво нейронов`]
-        let trainXs = tf.tensor2d(dataset.inputs).reshape([dataset.inputs.length, this.inputLen]);
-        let trainYs = tf.tensor1d(dataset.outputs);
+        let trainXs = tf.reshape(dataset.inputs, [dataset.inputs.length, this.inputLen]);
+        let trainYs = tf.reshape(dataset.outputs,[dataset.outputs.length, this.outputLen]);
 
-        let testXs = tf.tensor2d(testDataset.inputs).reshape([testDataset.inputs.length, this.inputLen]);
-        let testYs = tf.tensor1d(testDataset.outputs);
+        let testXs = tf.reshape(testDataset.inputs,[testDataset.inputs.length, this.inputLen]);
+        let testYs = tf.reshape(testDataset.outputs,[testDataset.outputs.length, this.outputLen]);
 
         this.currTrainingDataset = dataset;
         this.currValDataset = testDataset;
